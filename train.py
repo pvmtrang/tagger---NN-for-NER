@@ -153,17 +153,21 @@ update_tag_scheme(test_sentences, tag_scheme)
 # Create a dictionary / mapping of words
 # If we use pretrained embeddings, we add them to the dictionary.
 if parameters['pre_emb']:
+    print "Using pre_emd ne"
     dico_words_train = word_mapping(train_sentences, lower)[0] #a dictionary counts appearance of each word in train_sentences
     dico_words, word_to_id, id_to_word = augment_with_pretrained( #expand dict to word in pretrained list, dev and test set maybe???
         dico_words_train.copy(),
         parameters['pre_emb'],
         list(itertools.chain.from_iterable(
-            [[w[0] for w in s] for s in dev_sentences + test_sentences])
+            [[w[0] for w in s] for s in dev_sentences + test_sentences])  #why dev and test set??
         ) if not parameters['all_emb'] else None
     )
+    print "Done loading pre_emb"
 else:
     dico_words, word_to_id, id_to_word = word_mapping(train_sentences, lower)
     dico_words_train = dico_words
+
+#expand to use char embedding?? flair??
 
 # Create a dictionary and a mapping for words / POS tags / tags
 dico_chars, char_to_id, id_to_char = char_mapping(train_sentences) #count appearance of each character?? lmao?? an alphabet a??
@@ -211,8 +215,8 @@ if opts.reload:
 #
 singletons = set([word_to_id[k] for k, v
                   in dico_words_train.items() if v == 1])
-n_epochs = 100  # number of epochs over the training set
-freq_eval = 1000  # evaluate on dev every freq_eval steps
+n_epochs = 10  # number of epochs over the training set
+freq_eval = 500  # evaluate on dev every freq_eval steps
 best_dev = -np.inf
 best_test = -np.inf
 count = 0

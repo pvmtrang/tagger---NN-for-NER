@@ -163,7 +163,7 @@ def augment_with_pretrained(dictionary, ext_emb_path, words):
     to the dictionary, otherwise, we only add the words that are given by
     `words` (typically the words in the development and test sets.)
     """
-    print 'Loading pretrained embeddings from %s...' % ext_emb_path
+    print 'Loader.py Loading pretrained embeddings from %s...' % ext_emb_path
     assert os.path.isfile(ext_emb_path)
 
     # Load pretrained embeddings from file

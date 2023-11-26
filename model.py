@@ -167,7 +167,7 @@ class Model(object):
             # Initialize with pretrained embeddings
             if pre_emb and training:
                 new_weights = word_layer.embeddings.get_value()
-                print 'Loading pretrained embeddings from %s...' % pre_emb
+                print 'model.py Loading pretrained embeddings from %s...' % pre_emb
                 pretrained = {}
                 emb_invalid = 0
                 for i, line in enumerate(codecs.open(pre_emb, 'r', 'utf-8')):

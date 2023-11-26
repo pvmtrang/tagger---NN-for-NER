@@ -12,7 +12,8 @@ Install
 - numpy
 -scipy
 - theano
-- perl
+- perl (i use strawberry perl https://strawberryperl.com/) to run evaluation/conlleval script
+- mingw g++ for theano C-optimization (mingw get setup)
 
 ```
 
@@ -20,6 +21,23 @@ Install
 Set-ExecutionPolicy Unrestricted -Scope Process
 .\venv\Scripts\activate
 ```
+```
+Download
+- glove 100d (https://www.kaggle.com/datasets/pkugoodspeed/nlpword2vecembeddingspretrained/?select=glove.6B.100d.txt)
+- phoNER - covid19: vietnamese ner dataset syllable and word (https://github.com/VinAIResearch/PhoNER_COVID19)
+- phoW2v - vietnamese pretrained syllable and word embedding (https://github.com/datquocnguyen/PhoW2V)
+```
+## Compile
+
+- Origin config (char + word + dropout + their eng dataset. Reduce to 10 epoch thui) 
+```python ./train.py --train dataset/eng.train --dev dataset/eng.testa --test dataset/eng.testb```
+- Origin config + pretrained glove 100d: 
+```python ./train.py --train dataset/eng.train --dev dataset/eng.testa --test dataset/eng.testb --pre_emb dataset/embedding/glove/glove.6B.100d.txt```
+- Origin config + viet dataset word
+- Origin config + viet dataset syllable
+- Origin config + viet word dataset + word embedding
+- Origin config + viet syll dataset + syll dataset
+
 
 
 ## Tag sentences

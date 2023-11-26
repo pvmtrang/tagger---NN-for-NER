@@ -1,4 +1,11 @@
 evaluation/temp/*
+dataset/download/*
+models/*
+
+# temporarily ignore this embedding folder coz it's to heavy dontknowwhy
+dataset/embedding/pho_w2v/word/*
+dataset/embedding/pho_w2v/syllable/*
+dataset/embedding/glove/*
 
 # Xcode
 *.DS_Store
