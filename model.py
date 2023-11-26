@@ -28,10 +28,12 @@ class Model(object):
             self.name = get_name(parameters)
             # Model location
             model_path = os.path.join(models_path, self.name)
-            self.model_path = model_path
-            self.parameters_path = os.path.join(model_path, 'parameters.pkl')
-            self.mappings_path = os.path.join(model_path, 'mappings.pkl')
+            self.model_path = model_path[:200]
+            self.parameters_path = os.path.join(self.model_path, 'parameters.pkl')
+            self.mappings_path = os.path.join(self.model_path, 'mappings.pkl')
             # Create directory for the model if it does not exist
+            # if not os.path.exists(self.model_path):
+            #     os.makedirs(self.model_path)
             if not os.path.exists(self.model_path):
                 os.makedirs(self.model_path)
             # Save the parameters to disk
@@ -40,9 +42,9 @@ class Model(object):
         else:
             assert parameters is None and models_path is None
             # Model location
-            self.model_path = model_path
-            self.parameters_path = os.path.join(model_path, 'parameters.pkl')
-            self.mappings_path = os.path.join(model_path, 'mappings.pkl')
+            self.model_path = model_path[:200]
+            self.parameters_path = os.path.join(self.model_path, 'parameters.pkl')
+            self.mappings_path = os.path.join(self.model_path, 'mappings.pkl')
             # Load the parameters and the mappings from disk
             with open(self.parameters_path, 'rb') as f:
                 self.parameters = cPickle.load(f)
@@ -100,7 +102,7 @@ class Model(object):
         Load components values from disk.
         """
         for name, param in self.components.items():
-            param_path = os.path.join(self.model_path, "%s.mat" % name)
+            param_path = os.path.join(self.model_path[:200], "%s.mat" % name)
             param_values = scipy.io.loadmat(param_path)
             if hasattr(param, 'params'):
                 for p in param.params:
@@ -147,6 +149,7 @@ class Model(object):
 
         # Sentence length
         s_len = (word_ids if word_dim else char_pos_ids).shape[0]
+        #word_dim: Token embedding dimension, default 100
 
         # Final input (all word features)
         input_dim = 0
@@ -157,9 +160,10 @@ class Model(object):
         #
         if word_dim:
             input_dim += word_dim
-            word_layer = EmbeddingLayer(n_words, word_dim, name='word_layer')
-            word_input = word_layer.link(word_ids)
-            inputs.append(word_input)
+            #word_layer: radomly initialized a matrix of size n_words x word_dim, word_dim is the size of output embedding
+            word_layer = EmbeddingLayer(n_words, word_dim, name='word_layer') 
+            word_input = word_layer.link(word_ids) #return the embedding of index word_ids
+            inputs.append(word_input) #input is a list of embedding of size word_dim for each index 
             # Initialize with pretrained embeddings
             if pre_emb and training:
                 new_weights = word_layer.embeddings.get_value()
@@ -193,7 +197,7 @@ class Model(object):
                             re.sub('\d', '0', word.lower())
                         ]
                         c_zeros += 1
-                word_layer.embeddings.set_value(new_weights)
+                word_layer.embeddings.set_value(new_weights) #re-set embedding for each word equal to the pre-trained embedding
                 print 'Loaded %i pretrained embeddings.' % len(pretrained)
                 print ('%i / %i (%.4f%%) words have been initialized with '
                        'pretrained embeddings.') % (
@@ -217,7 +221,7 @@ class Model(object):
             char_lstm_rev = LSTM(char_dim, char_lstm_dim, with_batch=True,
                                  name='char_lstm_rev')
 
-            char_lstm_for.link(char_layer.link(char_for_ids))
+            char_lstm_for.link(char_layer.link(char_for_ids)) #input the randomly embedding from Embedding Layer, fine-tune/learn it through the FF LSTM
             char_lstm_rev.link(char_layer.link(char_rev_ids))
 
             char_for_output = char_lstm_for.h.dimshuffle((1, 0, 2))[

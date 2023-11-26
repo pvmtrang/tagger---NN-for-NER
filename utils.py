@@ -5,10 +5,11 @@ import numpy as np
 import theano
 
 
-models_path = "./models"
-eval_path = "./evaluation"
+models_path = "models"
+eval_path = "evaluation"
 eval_temp = os.path.join(eval_path, "temp")
-eval_script = os.path.join(eval_path, "conlleval")
+eval_script = os.path.join(eval_path, "conlleval.pl")
+
 
 
 def get_name(parameters):
@@ -57,6 +58,7 @@ def create_dico(item_list):
     """
     Create a dictionary of items from a list of list of items.
     """
+    # itemlist: items1(item11, item12), items2(item21...)
     assert type(item_list) is list
     dico = {}
     for items in item_list:
@@ -65,7 +67,7 @@ def create_dico(item_list):
                 dico[item] = 1
             else:
                 dico[item] += 1
-    return dico
+    return dico #a dictionary counting all item 
 
 
 def create_mapping(dico):
@@ -73,9 +75,9 @@ def create_mapping(dico):
     Create a mapping (item to ID / ID to item) from a dictionary.
     Items are ordered by decreasing frequency.
     """
-    sorted_items = sorted(dico.items(), key=lambda x: (-x[1], x[0]))
-    id_to_item = {i: v[0] for i, v in enumerate(sorted_items)}
-    item_to_id = {v: k for k, v in id_to_item.items()}
+    sorted_items = sorted(dico.items(), key=lambda x: (-x[1], x[0])) #sort by descending count of word first, then by alphabet?? order of word
+    id_to_item = {i: v[0] for i, v in enumerate(sorted_items)} #index in dico: word
+    item_to_id = {v: k for k, v in id_to_item.items()} #word: index in dico
     return item_to_id, id_to_item
 
 
@@ -271,7 +273,8 @@ def evaluate(parameters, f_eval, raw_sentences, parsed_sentences,
     scores_path = os.path.join(eval_temp, "eval.%i.scores" % eval_id)
     with codecs.open(output_path, 'w', 'utf8') as f:
         f.write("\n".join(predictions))
-    os.system("%s < %s > %s" % (eval_script, output_path, scores_path))
+    print "Running evaluation: %s < %s > %s" % (eval_script, output_path, scores_path)
+    os.system("perl -w  %s < %s > %s" % (os.path.abspath(eval_script), output_path, scores_path))
 
     # CoNLL evaluation results
     eval_lines = [l.rstrip() for l in codecs.open(scores_path, 'r', 'utf8')]
@@ -296,7 +299,7 @@ def evaluate(parameters, f_eval, raw_sentences, parsed_sentences,
 
     # Global accuracy
     print "%i/%i (%.5f%%)" % (
-        count.trace(), count.sum(), 100. * count.trace() / max(1, count.sum())
+        count.trace(), count.sum(), 100 * count.trace() / max(1, count.sum())
     )
 
     # F1 on all entities

@@ -7,6 +7,20 @@ NER Tagger is an implementation of a Named Entity Recognizer that obtains state-
 
 To use the tagger, you need Python 2.7, with Numpy and Theano installed.
 
+```
+Install
+- numpy
+-scipy
+- theano
+- perl
+
+```
+
+```
+Set-ExecutionPolicy Unrestricted -Scope Process
+.\venv\Scripts\activate
+```
+
 
 ## Tag sentences
 

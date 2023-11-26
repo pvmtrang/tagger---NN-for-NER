@@ -11,18 +11,19 @@ def load_sentences(path, lower, zeros):
     Sentences are separated by empty lines.
     """
     sentences = []
-    sentence = []
-    for line in codecs.open(path, 'r', 'utf8'):
+    sentence = [] #sentence: a list of line.split() for an actual sentence sample
+    for line in codecs.open(path, 'r', 'utf8'): #a line: European NNP I-NP I-ORG
         line = zero_digits(line.rstrip()) if zeros else line.rstrip()
-        if not line:
-            if len(sentence) > 0:
+        if not line: #if empty line
+            if len(sentence) > 0: #ua la sao?? empty line thi sentence len > 0 how ta??
                 if 'DOCSTART' not in sentence[0][0]:
                     sentences.append(sentence)
                 sentence = []
         else:
             word = line.split()
-            assert len(word) >= 2
-            sentence.append(word)
+            assert len(word) >= 2 # >= 2 (word, NER tag, other tags optional)
+            sentence.append(word) #appen ca cai list do vao ha??
+            # ua vay a sentence is a line?? not an actual sentence (list of line[first word])??
     if len(sentence) > 0:
         if 'DOCSTART' not in sentence[0][0]:
             sentences.append(sentence)
@@ -57,8 +58,9 @@ def word_mapping(sentences, lower):
     """
     Create a dictionary and a mapping of words, sorted by frequency.
     """
+    # words: a list of converted-to-lowercase word in dataset
     words = [[x[0].lower() if lower else x[0] for x in s] for s in sentences]
-    dico = create_dico(words)
+    dico = create_dico(words) #counts appearance of every word
     dico['<UNK>'] = 10000000
     word_to_id, id_to_word = create_mapping(dico)
     print "Found %i unique words (%i in total)" % (
@@ -71,6 +73,7 @@ def char_mapping(sentences):
     """
     Create a dictionary and mapping of characters, sorted by frequency.
     """
+    #for each 
     chars = ["".join([w[0] for w in s]) for s in sentences]
     dico = create_dico(chars)
     char_to_id, id_to_char = create_mapping(dico)
@@ -135,9 +138,9 @@ def prepare_dataset(sentences, word_to_id, char_to_id, tag_to_id, lower=False):
     def f(x): return x.lower() if lower else x
     data = []
     for s in sentences:
-        str_words = [w[0] for w in s]
+        str_words = [w[0] for w in s] #the actual words of the actual sentence
         words = [word_to_id[f(w) if f(w) in word_to_id else '<UNK>']
-                 for w in str_words]
+                 for w in str_words] #how can it be <UNK> when word_to_id is created from train_sentences?
         # Skip characters that are not in the training set
         chars = [[char_to_id[c] for c in w if c in char_to_id]
                  for w in str_words]
@@ -174,9 +177,10 @@ def augment_with_pretrained(dictionary, ext_emb_path, words):
     # or only words given in the `words` list to which
     # we can assign a pretrained embedding
     if words is None:
-        for word in pretrained:
-            if word not in dictionary:
+        for word in pretrained: 
+            if word not in dictionary: #con neu co roi thi thoi a??
                 dictionary[word] = 0
+            #what about words in dictionary that no in pretrained??
     else:
         for word in words:
             if any(x in pretrained for x in [

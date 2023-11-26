@@ -68,7 +68,7 @@ class EmbeddingLayer(object):
         self.output_dim = output_dim
         self.name = name
 
-        # Randomly generate weights
+        # Randomly generate weights. input, output dim here is for the size of random matrix
         self.embeddings = shared((input_dim, output_dim),
                                  self.name + '__embeddings')
 
@@ -139,7 +139,7 @@ class LSTM(object):
         self.w_xi = shared((input_dim, hidden_dim), name + '__w_xi')
         self.w_hi = shared((hidden_dim, hidden_dim), name + '__w_hi')
         self.w_ci = shared((hidden_dim, hidden_dim), name + '__w_ci')
-
+#ua sao lai comment out forget weight??
         # Forget gate weights
         # self.w_xf = shared((input_dim, hidden_dim), name + '__w_xf')
         # self.w_hf = shared((hidden_dim, hidden_dim), name + '__w_hf')

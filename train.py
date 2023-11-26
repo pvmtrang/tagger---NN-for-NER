@@ -153,8 +153,8 @@ update_tag_scheme(test_sentences, tag_scheme)
 # Create a dictionary / mapping of words
 # If we use pretrained embeddings, we add them to the dictionary.
 if parameters['pre_emb']:
-    dico_words_train = word_mapping(train_sentences, lower)[0]
-    dico_words, word_to_id, id_to_word = augment_with_pretrained(
+    dico_words_train = word_mapping(train_sentences, lower)[0] #a dictionary counts appearance of each word in train_sentences
+    dico_words, word_to_id, id_to_word = augment_with_pretrained( #expand dict to word in pretrained list, dev and test set maybe???
         dico_words_train.copy(),
         parameters['pre_emb'],
         list(itertools.chain.from_iterable(
@@ -166,8 +166,8 @@ else:
     dico_words_train = dico_words
 
 # Create a dictionary and a mapping for words / POS tags / tags
-dico_chars, char_to_id, id_to_char = char_mapping(train_sentences)
-dico_tags, tag_to_id, id_to_tag = tag_mapping(train_sentences)
+dico_chars, char_to_id, id_to_char = char_mapping(train_sentences) #count appearance of each character?? lmao?? an alphabet a??
+dico_tags, tag_to_id, id_to_tag = tag_mapping(train_sentences) #count appearance of NER tag
 
 # Index data
 train_data = prepare_dataset(
@@ -179,6 +179,17 @@ dev_data = prepare_dataset(
 test_data = prepare_dataset(
     test_sentences, word_to_id, char_to_id, tag_to_id, lower
 )
+
+# train_data=train_data[:len(train_data)/10]
+# dev_data=dev_data[:len(dev_data)/10]
+# test_data=test_data[:len(test_data)/10]
+
+print('train data')
+print(train_data[0])
+print("dev data")
+print(dev_data[0])
+print('test data')
+print(test_data[0])
 
 print "%i / %i / %i sentences in train / dev / test." % (
     len(train_data), len(dev_data), len(test_data))
@@ -207,20 +218,20 @@ best_test = -np.inf
 count = 0
 for epoch in xrange(n_epochs):
     epoch_costs = []
-    print "Starting epoch %i..." % epoch
+    print "------------STARTING EPOCH %i..." % epoch
     for i, index in enumerate(np.random.permutation(len(train_data))):
-        count += 1
+        count += 1 #count for what?? sao ko dung i??
         input = create_input(train_data[index], parameters, True, singletons)
         new_cost = f_train(*input)
         epoch_costs.append(new_cost)
         if i % 50 == 0 and i > 0 == 0:
-            print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
+            print "sample id %i, cost average over the last 50 samples: %f" % (i, np.mean(epoch_costs[-50:]))
         if count % freq_eval == 0:
             dev_score = evaluate(parameters, f_eval, dev_sentences,
                                  dev_data, id_to_tag, dico_tags)
+            print "Score on dev: %.5f" % dev_score
             test_score = evaluate(parameters, f_eval, test_sentences,
                                   test_data, id_to_tag, dico_tags)
-            print "Score on dev: %.5f" % dev_score
             print "Score on test: %.5f" % test_score
             if dev_score > best_dev:
                 best_dev = dev_score
@@ -230,4 +241,4 @@ for epoch in xrange(n_epochs):
             if test_score > best_test:
                 best_test = test_score
                 print "New best score on test."
-    print "Epoch %i done. Average cost: %f" % (epoch, np.mean(epoch_costs))
+    print "---------------------Epoch %i done. Average cost: %f" % (epoch, np.mean(epoch_costs))
