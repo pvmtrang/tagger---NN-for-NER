@@ -33,13 +33,12 @@ Download
 ```python ./train.py --train dataset/eng.train --dev dataset/eng.testa --test dataset/eng.testb```
 - Origin config + pretrained glove 100d: 
 ```python ./train.py --train dataset/eng.train --dev dataset/eng.testa --test dataset/eng.testb --pre_emb dataset/embedding/glove/glove.6B.100d.txt```
-- Origin config + viet dataset word
-```python ./train.py --train dataset\\PhoNER_COVID19\\syllable\\train_syllable.conll --dev dataset\\PhoNER_COVID19\\syllable\\dev_syllable.conll --test dataset\\PhoNER_COVID19\\syllable\\test_syllable.conll --tag_scheme iob```
-
 - Origin config + viet dataset syllable
-```python ./train.py --train dataset\\PhoNER_COVID19\\word\\dev_word.conll --dev dataset\\PhoNER_COVID19\\word\\dev_word.conll --test dataset\\PhoNER_COVID19\\word\\test_word.conll --tag_scheme iob```
+```python ./train.py --train dataset\\PhoNER_COVID19\\syllable\\train_syllable.conll --dev dataset\\PhoNER_COVID19\\syllable\\dev_syllable.conll --test dataset\\PhoNER_COVID19\\syllable\\test_syllable.conll --tag_scheme iob```
+- Origin config + viet dataset word
+```python ./train.py --train dataset\\PhoNER_COVID19\\word\\train_word.conll --dev dataset\\PhoNER_COVID19\\word\\dev_word.conll --test dataset\\PhoNER_COVID19\\word\\test_word.conll --tag_scheme iob```
 - Origin config + viet word dataset + word embedding
-```python ./train.py --train dataset\\PhoNER_COVID19\\word\\dev_word.conll --dev dataset\\PhoNER_COVID19\\word\\dev_word.conll --test dataset\\PhoNER_COVID19\\word\\test_word.conll --tag_scheme iob --pre_emb dataset\\embedding\\pho_w2v\\word\\word2vec_vi_words_100dims.txt```
+```python ./train.py --train dataset\\PhoNER_COVID19\\word\\train_word.conll --dev dataset\\PhoNER_COVID19\\word\\dev_word.conll --test dataset\\PhoNER_COVID19\\word\\test_word.conll --tag_scheme iob --pre_emb dataset\\embedding\\pho_w2v\\word\\word2vec_vi_words_100dims.txt```
 
 - Origin config + viet syll dataset + syll dataset
 ```python ./train.py --train dataset\\PhoNER_COVID19\\syllable\\train_syllable.conll --dev dataset\\PhoNER_COVID19\\syllable\\dev_syllable.conll --test dataset\\PhoNER_COVID19\\syllable\\test_syllable.conll --tag_scheme iob --pre_emb dataset\embedding\pho_w2v\syllable\word2vec_vi_syllables_100dims.txt```
